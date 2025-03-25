@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ismail's Mark Predictor and SGPA Calculator</title>
+    <title>Mark Predictor and SGPA Calculator</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #2c3e50; /* Dark gray background */
+            background-color: #000000; /* Black background */
             color: #2ecc71; /* Green text color */
             margin-top: 20px;
         }
@@ -29,6 +29,10 @@
         .result pre {
             margin: 0;
         }
+        .validation-message {
+            color: red;
+            font-size: 0.9em;
+        }
         .watermark {
             position: absolute;
             top: 10px;
@@ -40,11 +44,11 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mb-4">Ismail's Mark Predictor and SGPA Calculator</h1>
+        <h1 class="text-center mb-4">Mark Predictor and SGPA Calculator</h1>
         <small class="watermark">Developed by Ismail</small>
         <div class="result mt-4">
-            {% if result_text %}
-                <pre>Semester Grade Point Average (SGPA): {{ result_text }}</pre>
+            {% if sgpa %}
+                <pre>Semester Grade Point Average (SGPA): {{ sgpa }}</pre>
             {% endif %}
         </div>
         <div class="text-center">
