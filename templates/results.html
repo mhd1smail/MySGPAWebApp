@@ -26,6 +26,8 @@
             border: 1px solid #2c3e50;
             border-radius: 5px;
             color: #ffffff; /* White text color for dark areas */
+            word-wrap: break-word; /* Ensure text wraps properly */
+            white-space: pre-wrap; /* Preserve whitespace and wrap long lines */
         }
         .result pre {
             margin: 0;
@@ -52,6 +54,13 @@
             }
             .result pre {
                 font-size: 14px;
+            }
+        }
+
+        /* Responsive adjustments for mobile */
+        @media (max-width: 767px) {
+            .result {
+                font-size: 14px; /* Smaller font size for mobile */
             }
         }
     </style>
