@@ -40,25 +40,30 @@
 <body>
     <div class="container">
         <h1 class="text-center mb-4">Ismail's Mark Predictor and SGPA Calculator</h1>
-        <form method="post" action="/submit_grades">
-            {% for subject in subjects %}
-            <div class="subject-container">
-                <p>Subject: {{ subject.name }}</p>
-                <p>Credits: {{ subject.credits }}</p>
-                <p>Internal Marks: {{ subject.internal_marks }}</p>
-                <label>Achieved Grade:</label>
-                <select class="form-control" id="achieved_grade_{{ loop.index }}" name="achieved_grade_{{ loop.index }}">
-                    <option value="O">O</option>
-                    <option value="A+">A+</option>
-                    <option value="A">A</option>
-                    <option value="B+">B+</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="F">F</option>
-                </select>
+        <form method="post" id="sgpa-form" action="/submit_grades">
+            <div id="subjects">
+                {% for subject in subjects %}
+                <div class="subject-container">
+                    <p>Subject: {{ subject.name }}</p>
+                    <p>Credits: {{ subject.credits }}</p>
+                    <p>Internal Marks: {{ subject.internal_marks }}</p>
+                    <label>Achieved Grade:</label>
+                    <select class="form-control" id="achieved_grade_{{ loop.index }}" name="achieved_grade_{{ loop.index }}" required>
+                        <option value="">Select Grade</option>
+                        <option value="O">O</option>
+                        <option value="A+">A+</option>
+                        <option value="A">A</option>
+                        <option value="B+">B+</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="F">F</option>
+                    </select>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-primary">Submit Grades</button>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Submit Grades</button>
+            </div>
         </form>
         <div class="result mt-4">
             {% if result_text %}
@@ -66,5 +71,33 @@
             {% endif %}
         </div>
     </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
+    <script>
+        // Optional: Add client-side validation
+        function validateForm() {
+            let isValid = true;
+            for (let i = 1; i <= {{ subjects|length }}; i++) {
+                const achievedGrade = document.getElementById(`achieved_grade_${i}`).value.trim();
+                if (!achievedGrade) {
+                    document.getElementById(`achieved_grade_${i}`).classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    document.getElementById(`achieved_grade_${i}`).classList.remove('is-invalid');
+                }
+            }
+            return isValid;
+        }
+
+        document.querySelector('form').addEventListener('submit', function(event) {
+            if (!validateForm()) {
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>
