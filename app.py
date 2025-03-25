@@ -33,20 +33,21 @@ def calculate_minimum_endsem(internal_marks):
 
 # Function to get grade points
 def get_grade_points(achieved_grade):
-    return grades.get(achieved_grade, 0)
+    return grades.get(achieved_grade, 0)[2]
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    result_text = ""
     if request.method == 'POST':
         subjects = []
         total_weighted_points = 0
         total_credits = 0
-        result_text = ""
 
         for i in range(1, 100):  # Assuming a maximum of 99 subjects
             subject_name = request.form.get(f'subject_name_{i}')
             credits = request.form.get(f'credits_{i}')
             internal_marks = request.form.get(f'internal_marks_{i}')
+            achieved_grade = request.form.get(f'achieved_grade_{i}')
 
             if not subject_name:
                 break
@@ -58,12 +59,13 @@ def index():
                     subjects.append({
                         "name": subject_name,
                         "credits": credits,
-                        "internal_marks": internal_marks
+                        "internal_marks": internal_marks,
+                        "achieved_grade": achieved_grade
                     })
                 else:
-                    result_text += "Invalid internal marks. Please enter a value between 0 and 60.\n"
+                    result_text += f"Invalid internal marks for {subject_name}. Please enter a value between 0 and 60.\n"
             except ValueError:
-                result_text += "Invalid input. Please enter numeric values for credits and internal marks.\n"
+                result_text += f"Invalid input for {subject_name}. Please enter numeric values for credits and internal marks.\n"
 
         for subject in subjects:
             subject_name = subject["name"]
@@ -73,7 +75,7 @@ def index():
             for grade, marks in min_endsem_marks.items():
                 result_text += f"{grade}: {marks:.2f}\n"
 
-            achieved_grade = request.form.get(f'achieved_grade_{subjects.index(subject) + 1}').strip().upper()
+            achieved_grade = subject["achieved_grade"].strip().upper()
             grade_points = get_grade_points(achieved_grade)
             if grade_points == 0:
                 result_text += f"Invalid grade entered for {subject_name}. Assuming 'F' with 0 grade points.\n"
@@ -87,9 +89,7 @@ def index():
         else:
             result_text += "\nNo subjects were entered to calculate SGPA.\n"
 
-        return render_template('index.html', result_text=result_text)
-
-    return render_template('index.html')
+    return render_template('index.html', result_text=result_text)
 
 if __name__ == '__main__':
     app.run(debug=True)
