@@ -9,11 +9,12 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            background-color: #2c3e50; /* Dark gray background */
+            color: #2ecc71; /* Green text color */
             margin-top: 20px;
         }
         .container {
-            background-color: #ffffff;
+            background-color: #34495e; /* Darker gray container */
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -21,25 +22,29 @@
         .result {
             margin-top: 20px;
             padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
+            background-color: #34495e;
+            border: 1px solid #2c3e50;
             border-radius: 5px;
         }
         .result pre {
             margin: 0;
         }
-        .validation-message {
-            color: red;
-            font-size: 0.9em;
+        .watermark {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #bdc3c7; /* Light gray watermark */
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="text-center mb-4">Ismail's Mark Predictor and SGPA Calculator</h1>
+        <small class="watermark">Developed by Ismail</small>
         <div class="result mt-4">
             {% if result_text %}
-                <pre>{{ result_text }}</pre>
+                <pre>Semester Grade Point Average (SGPA): {{ result_text }}</pre>
             {% endif %}
         </div>
         <div class="text-center">
