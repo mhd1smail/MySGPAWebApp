@@ -3,30 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ismail's Mark Predictor and SGPA Calculator</title>
+    <title>Mark Predictor and SGPA Calculator</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            background-color: #000000; /* Black background */
+            color: #2ecc71; /* Green text color */
             margin-top: 20px;
         }
         .container {
-            background-color: #ffffff;
+            background-color: #ecf0f1; /* Light gray container */
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .subject-container {
             margin-bottom: 20px;
+            background-color: #34495e; /* Darker gray box for subjects */
+            padding: 10px;
+            border-radius: 5px;
+            color: #000000; /* Black text color */
         }
         .result {
             margin-top: 20px;
             padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
+            background-color: #34495e;
+            border: 1px solid #2c3e50;
             border-radius: 5px;
+            color: #000000; /* Black text color */
         }
         .result pre {
             margin: 0;
@@ -35,17 +41,25 @@
             color: red;
             font-size: 0.9em;
         }
+        .watermark {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #bdc3c7; /* Light gray watermark */
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mb-4">Ismail's Mark Predictor and SGPA Calculator</h1>
+        <h1 class="text-center mb-4">Mark Predictor and SGPA Calculator</h1>
+        <small class="watermark">Developed by Ismail</small>
         <form method="post" id="sgpa-form" action="/submit_grades">
-            {% for subject, credits, internal_marks, min_endsem_marks in subjects %}
+            {% for subject in subjects %}
             <div class="subject-container">
-                <p>Subject: {{ subject }}</p>
-                <p>Credits: {{ credits }}</p>
-                <p>Internal Marks: {{ internal_marks }}</p>
+                <p>Subject: {{ subject.name }}</p>
+                <p>Credits: {{ subject.credits }}</p>
+                <p>Internal Marks: {{ subject.internal_marks }}</p>
                 <label>Achieved Grade:</label>
                 <select class="form-control" id="achieved_grade_{{ loop.index }}" name="achieved_grade_{{ loop.index }}" required>
                     <option value="">Select Grade</option>
@@ -57,9 +71,9 @@
                     <option value="C">C</option>
                     <option value="F">F</option>
                 </select>
-                <input type="hidden" name="subject_name_{{ loop.index }}" value="{{ subject }}">
-                <input type="hidden" name="credits_{{ loop.index }}" value="{{ credits }}">
-                <input type="hidden" name="internal_marks_{{ loop.index }}" value="{{ internal_marks }}">
+                <input type="hidden" name="subject_name_{{ loop.index }}" value="{{ subject.name }}">
+                <input type="hidden" name="credits_{{ loop.index }}" value="{{ subject.credits }}">
+                <input type="hidden" name="internal_marks_{{ loop.index }}" value="{{ subject.internal_marks }}">
             </div>
             {% endfor %}
             <div class="text-center">

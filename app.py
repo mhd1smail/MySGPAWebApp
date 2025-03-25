@@ -76,6 +76,7 @@ def index():
             for grade, marks in min_endsem_marks.items():
                 result_text += f"{grade}: {marks:.2f}\n"
 
+        # Pass subjects to the next page for grade entry
         return render_template('enter_grades.html', subjects=subjects, result_text=result_text)
 
     return render_template('index.html')
@@ -155,7 +156,7 @@ def submit_grades():
             result_text += f"Invalid input for {subject_name}. Please enter numeric values for credits and internal marks.\n"
 
     if not subjects:
-        return render_template('submit_grades.html', subjects=[], result_text="No subjects were entered. Please add at least one subject.")
+        return render_template('submit_grades.html', subjects=[], result_text="No subjects were entered to calculate SGPA.")
 
     for subject in subjects:
         subject_name = subject["name"]
@@ -175,11 +176,9 @@ def submit_grades():
 
     if total_credits > 0:
         sgpa = total_weighted_points / total_credits
-        result_text += f"\nSemester Grade Point Average (SGPA): {sgpa:.2f}\n"
+        return render_template('results.html', sgpa=f"{sgpa:.2f}")
     else:
-        result_text += "\nNo subjects were entered to calculate SGPA.\n"
-
-    return render_template('results.html', result_text=result_text)
+        return render_template('submit_grades.html', subjects=subjects, result_text="No subjects were entered to calculate SGPA.")
 
 if __name__ == '__main__':
     app.run(debug=True)
