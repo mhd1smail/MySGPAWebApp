@@ -61,11 +61,10 @@ def index():
                         "internal_marks": internal_marks
                     })
                 else:
-                    result_text += "Invalid internal marks. Please enter a value between 0 and 60.\n"
+                    result_text += f"Invalid internal marks for {subject_name}. Please enter a value between 0 and 60.\n"
             except ValueError:
-                result_text += "Invalid input. Please enter numeric values for credits and internal marks.\n"
+                result_text += f"Invalid input for {subject_name}. Please enter numeric values for credits and internal marks.\n"
 
-        # Display minimum end-semester marks for each grade
         for subject in subjects:
             subject_name = subject["name"]
             internal_marks = subject["internal_marks"]
@@ -74,68 +73,64 @@ def index():
             for grade, marks in min_endsem_marks.items():
                 result_text += f"{grade}: {marks:.2f}\n"
 
-        # Redirect to a new page or section where the user can enter achieved grades
         return render_template('enter_grades.html', subjects=subjects, result_text=result_text)
 
     return render_template('index.html')
 
-@app.route('/enter_grades', methods=['GET', 'POST'])
-def enter_grades():
-    if request.method == 'POST':
-        subjects = []
-        total_weighted_points = 0
-        total_credits = 0
-        result_text = ""
+@app.route('/submit_grades', methods=['POST'])
+def submit_grades():
+    subjects = []
+    total_weighted_points = 0
+    total_credits = 0
+    result_text = ""
 
-        for i in range(1, 100):  # Assuming a maximum of 99 subjects
-            subject_name = request.form.get(f'subject_name_{i}')
-            credits = request.form.get(f'credits_{i}')
-            internal_marks = request.form.get(f'internal_marks_{i}')
-            achieved_grade = request.form.get(f'achieved_grade_{i}')
+    for i in range(1, 100):  # Assuming a maximum of 99 subjects
+        subject_name = request.form.get(f'subject_name_{i}')
+        credits = request.form.get(f'credits_{i}')
+        internal_marks = request.form.get(f'internal_marks_{i}')
+        achieved_grade = request.form.get(f'achieved_grade_{i}', 'F')  # Default to 'F' if grade is missing
 
-            if not subject_name:
-                break
+        if not subject_name:
+            break
 
-            try:
-                credits = int(credits)
-                internal_marks = float(internal_marks)
-                if 0 <= internal_marks <= 60:
-                    subjects.append({
-                        "name": subject_name,
-                        "credits": credits,
-                        "internal_marks": internal_marks,
-                        "achieved_grade": achieved_grade
-                    })
-                else:
-                    result_text += "Invalid internal marks. Please enter a value between 0 and 60.\n"
-            except ValueError:
-                result_text += "Invalid input. Please enter numeric values for credits and internal marks.\n"
+        try:
+            credits = int(credits)
+            internal_marks = float(internal_marks)
+            if 0 <= internal_marks <= 60:
+                subjects.append({
+                    "name": subject_name,
+                    "credits": credits,
+                    "internal_marks": internal_marks,
+                    "achieved_grade": achieved_grade
+                })
+            else:
+                result_text += f"Invalid internal marks for {subject_name}. Please enter a value between 0 and 60.\n"
+        except ValueError:
+            result_text += f"Invalid input for {subject_name}. Please enter numeric values for credits and internal marks.\n"
 
-        for subject in subjects:
-            subject_name = subject["name"]
-            internal_marks = subject["internal_marks"]
-            min_endsem_marks = calculate_minimum_endsem(internal_marks)
-            result_text += f"\nSubject: {subject_name}\nMinimum End-Sem Marks (out of 75) to Achieve Each Grade:\n"
-            for grade, marks in min_endsem_marks.items():
-                result_text += f"{grade}: {marks:.2f}\n"
+    for subject in subjects:
+        subject_name = subject["name"]
+        internal_marks = subject["internal_marks"]
+        min_endsem_marks = calculate_minimum_endsem(internal_marks)
+        result_text += f"\nSubject: {subject_name}\nMinimum End-Sem Marks (out of 75) to Achieve Each Grade:\n"
+        for grade, marks in min_endsem_marks.items():
+            result_text += f"{grade}: {marks:.2f}\n"
 
-            achieved_grade = subject["achieved_grade"].strip().upper()
-            grade_points = get_grade_points(achieved_grade)
-            if grade_points == 0:
-                result_text += f"Invalid grade entered for {subject_name}. Assuming 'F' with 0 grade points.\n"
-            weighted_points = grade_points * subject["credits"]
-            total_weighted_points += weighted_points
-            total_credits += subject["credits"]
+        achieved_grade = subject["achieved_grade"].strip().upper()
+        grade_points = get_grade_points(achieved_grade)
+        if grade_points == 0:
+            result_text += f"Invalid grade entered for {subject_name}. Assuming 'F' with 0 grade points.\n"
+        weighted_points = grade_points * subject["credits"]
+        total_weighted_points += weighted_points
+        total_credits += subject["credits"]
 
-        if total_credits > 0:
-            sgpa = total_weighted_points / total_credits
-            result_text += f"\nSemester Grade Point Average (SGPA): {sgpa:.2f}\n"
-        else:
-            result_text += "\nNo subjects were entered to calculate SGPA.\n"
+    if total_credits > 0:
+        sgpa = total_weighted_points / total_credits
+        result_text += f"\nSemester Grade Point Average (SGPA): {sgpa:.2f}\n"
+    else:
+        result_text += "\nNo subjects were entered to calculate SGPA.\n"
 
-        return render_template('results.html', result_text=result_text)
-
-    return render_template('enter_grades.html')
+    return render_template('results.html', result_text=result_text)
 
 if __name__ == '__main__':
     app.run(debug=True)

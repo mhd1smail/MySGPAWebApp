@@ -40,39 +40,25 @@
 <body>
     <div class="container">
         <h1 class="text-center mb-4">Ismail's Mark Predictor and SGPA Calculator</h1>
-        <form method="post" id="sgpa-form">
-            <div id="subjects">
-                {% for subject in subjects %}
-                <div class="subject-container">
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label>Subject: {{ subject.name }}</label>
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label>Credits: {{ subject.credits }}</label>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label>Internal Marks: {{ subject.internal_marks }}</label>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label>Achieved Grade:</label>
-                            <select class="form-control" id="achieved_grade_{{ loop.index }}" name="achieved_grade_{{ loop.index }}">
-                                <option value="O">O</option>
-                                <option value="A+">A+</option>
-                                <option value="A">A</option>
-                                <option value="B+">B+</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
-                                <option value="F">F</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
+        <form method="post" action="/submit_grades">
+            {% for subject in subjects %}
+            <div class="subject-container">
+                <p>Subject: {{ subject.name }}</p>
+                <p>Credits: {{ subject.credits }}</p>
+                <p>Internal Marks: {{ subject.internal_marks }}</p>
+                <label>Achieved Grade:</label>
+                <select class="form-control" id="achieved_grade_{{ loop.index }}" name="achieved_grade_{{ loop.index }}">
+                    <option value="O">O</option>
+                    <option value="A+">A+</option>
+                    <option value="A">A</option>
+                    <option value="B+">B+</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="F">F</option>
+                </select>
             </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary">Submit Grades</button>
-            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Submit Grades</button>
         </form>
         <div class="result mt-4">
             {% if result_text %}
@@ -80,10 +66,5 @@
             {% endif %}
         </div>
     </div>
-
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
 </body>
 </html>
