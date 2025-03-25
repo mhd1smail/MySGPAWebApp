@@ -41,11 +41,11 @@
     <div class="container">
         <h1 class="text-center mb-4">Ismail's Mark Predictor and SGPA Calculator</h1>
         <form method="post" id="sgpa-form" action="/submit_grades">
-            {% for subject, credits, internal_marks, min_endsem_marks in subjects %}
+            {% for subject in subjects %}
             <div class="subject-container">
-                <p>Subject: {{ subject }}</p>
-                <p>Credits: {{ credits }}</p>
-                <p>Internal Marks: {{ internal_marks }}</p>
+                <p>Subject: {{ subject.name }}</p>
+                <p>Credits: {{ subject.credits }}</p>
+                <p>Internal Marks: {{ subject.internal_marks }}</p>
                 <label>Achieved Grade:</label>
                 <select class="form-control" id="achieved_grade_{{ loop.index }}" name="achieved_grade_{{ loop.index }}" required>
                     <option value="">Select Grade</option>
@@ -57,9 +57,9 @@
                     <option value="C">C</option>
                     <option value="F">F</option>
                 </select>
-                <input type="hidden" name="subject_name_{{ loop.index }}" value="{{ subject }}">
-                <input type="hidden" name="credits_{{ loop.index }}" value="{{ credits }}">
-                <input type="hidden" name="internal_marks_{{ loop.index }}" value="{{ internal_marks }}">
+                <input type="hidden" name="subject_name_{{ loop.index }}" value="{{ subject.name }}">
+                <input type="hidden" name="credits_{{ loop.index }}" value="{{ subject.credits }}">
+                <input type="hidden" name="internal_marks_{{ loop.index }}" value="{{ subject.internal_marks }}">
             </div>
             {% endfor %}
             <div class="text-center">

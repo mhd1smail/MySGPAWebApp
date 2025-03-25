@@ -37,11 +37,11 @@ def get_grade_points(achieved_grade):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    result_text = ""
     if request.method == 'POST':
         subjects = []
         total_weighted_points = 0
         total_credits = 0
-        result_text = ""
 
         for i in range(1, 100):  # Assuming a maximum of 99 subjects
             subject_name = request.form.get(f'subject_name_{i}')
@@ -76,29 +76,52 @@ def index():
             for grade, marks in min_endsem_marks.items():
                 result_text += f"{grade}: {marks:.2f}\n"
 
-        # Pass subjects to the next page for grade entry
         return render_template('enter_grades.html', subjects=subjects, result_text=result_text)
 
     return render_template('index.html')
 
 @app.route('/enter_grades', methods=['POST'])
 def enter_grades():
-    subjects = request.form.getlist('subject_name')
-    credits = request.form.getlist('credits')
-    internal_marks = request.form.getlist('internal_marks')
-    min_endsem_marks_list = []
-
+    subjects = []
+    total_weighted_points = 0
+    total_credits = 0
     result_text = ""
-    for i, subject in enumerate(subjects):
-        internal_marks_value = float(internal_marks[i])
-        min_endsem_marks = calculate_minimum_endsem(internal_marks_value)
-        min_endsem_marks_list.append(min_endsem_marks)
-        result_text += f"\nSubject: {subject}\nMinimum End-Sem Marks (out of 75) to Achieve Each Grade:\n"
+
+    for i in range(1, 100):  # Assuming a maximum of 99 subjects
+        subject_name = request.form.get(f'subject_name_{i}')
+        credits = request.form.get(f'credits_{i}')
+        internal_marks = request.form.get(f'internal_marks_{i}')
+
+        if not subject_name:
+            break
+
+        try:
+            credits = int(credits)
+            internal_marks = float(internal_marks)
+            if 0 <= internal_marks <= 60:
+                subjects.append({
+                    "name": subject_name,
+                    "credits": credits,
+                    "internal_marks": internal_marks
+                })
+            else:
+                result_text += f"Invalid internal marks for {subject_name}. Please enter a value between 0 and 60.\n"
+        except ValueError:
+            result_text += f"Invalid input for {subject_name}. Please enter numeric values for credits and internal marks.\n"
+
+    if not subjects:
+        return render_template('index.html', result_text="No subjects were entered. Please add at least one subject.")
+
+    for subject in subjects:
+        subject_name = subject["name"]
+        internal_marks = subject["internal_marks"]
+        min_endsem_marks = calculate_minimum_endsem(internal_marks)
+        result_text += f"\nSubject: {subject_name}\nMinimum End-Sem Marks (out of 75) to Achieve Each Grade:\n"
         for grade, marks in min_endsem_marks.items():
             result_text += f"{grade}: {marks:.2f}\n"
 
-    # Pass subjects, credits, internal marks, and min_endsem_marks to the next page
-    return render_template('submit_grades.html', subjects=zip(subjects, credits, internal_marks, min_endsem_marks_list), result_text=result_text)
+    # Pass subjects to the next page for grade entry
+    return render_template('submit_grades.html', subjects=subjects, result_text=result_text)
 
 @app.route('/submit_grades', methods=['POST'])
 def submit_grades():
