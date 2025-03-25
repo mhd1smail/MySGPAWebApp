@@ -56,25 +56,13 @@
                             <label for="internal_marks_1">Enter the internal marks for the subject (out of 60):</label>
                             <input type="number" step="0.01" class="form-control" id="internal_marks_1" name="internal_marks_1" required>
                         </div>
-                        <div class="form-group col-md-3">
-                            <label for="achieved_grade_1">Enter the achieved grade for the subject:</label>
-                            <select class="form-control" id="achieved_grade_1" name="achieved_grade_1">
-                                <option value="O">O</option>
-                                <option value="A+">A+</option>
-                                <option value="A">A</option>
-                                <option value="B+">B+</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
-                                <option value="F">F</option>
-                            </select>
-                        </div>
                     </div>
                 </div>
             </div>
             <div class="text-center">
                 <button type="button" class="btn btn-secondary mb-3" onclick="addSubject()">Add Subject</button>
                 <br>
-                <button type="submit" class="btn btn-primary">Calculate SGPA</button>
+                <button type="submit" class="btn btn-primary">Calculate Minimum Marks</button>
             </div>
         </form>
         <div class="result mt-4">
@@ -109,18 +97,6 @@
                     <div class="form-group col-md-3">
                         <label for="internal_marks_${subjectCount}">Enter the internal marks for the subject (out of 60):</label>
                         <input type="number" step="0.01" class="form-control" id="internal_marks_${subjectCount}" name="internal_marks_${subjectCount}" required>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="achieved_grade_${subjectCount}">Enter the achieved grade for the subject:</label>
-                        <select class="form-control" id="achieved_grade_${subjectCount}" name="achieved_grade_${subjectCount}">
-                            <option value="O">O</option>
-                            <option value="A+">A+</option>
-                            <option value="A">A</option>
-                            <option value="B+">B+</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="F">F</option>
-                        </select>
                     </div>
                 </div>
             `;
